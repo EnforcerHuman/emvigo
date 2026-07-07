@@ -5,22 +5,24 @@ class AuthController {
 
   final FirebaseAuthService _authService = FirebaseAuthService();
 
-  Future<void> signIn(String email, String password) async {
+  Future<bool> signIn(String email, String password) async {
     try {
       await _authService.signInWithEmailAndPassword(email, password);
-      // Handle successful sign-in
+      return true;
     } catch (e) {
       // Handle sign-in error
-      print('Sign-in error: $e');
+      return false;
     }
   }
 
-  Future<void> signUp(String email, String password) async {
+  Future<bool> signUp(String email, String password) async {
     try {
       await _authService.createUserWithEmailAndPassword(email, password);
+      return true;
       // Handle successful sign-up
     } catch (e) {
       // Handle sign-up error
+      return false;
       print('Sign-up error: $e');
     }
   }
