@@ -1,13 +1,20 @@
 import 'package:flutter/material.dart';
 
 class AppDropDown extends StatelessWidget {
-  const AppDropDown({super.key, required this.options});
+  const AppDropDown({
+    super.key,
+    required this.options,
+    this.value,
+    this.onChanged,
+  });
   final List<String> options;
+  final String? value;
+  final ValueChanged<String?>? onChanged;
 
   @override
   Widget build(BuildContext context) {
     return DropdownButtonFormField<String>(
-      initialValue: options.isNotEmpty ? options[0] : null,
+      value: value,
       decoration: InputDecoration(
         filled: true,
         fillColor: Color(0xFFF7F7F7),
@@ -19,9 +26,7 @@ class AppDropDown extends StatelessWidget {
       items: options.map<DropdownMenuItem<String>>((String value) {
         return DropdownMenuItem<String>(value: value, child: Text(value));
       }).toList(),
-      onChanged: (String? newValue) {
-        // Handle dropdown value change
-      },
+      onChanged: onChanged,
     );
   }
 }

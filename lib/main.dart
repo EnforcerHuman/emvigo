@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:machine_task/blocs/bloc/auth_bloc.dart';
-import 'package:machine_task/core/constants/colors.dart';
+import 'package:machine_task/blocs/bloc/profile_bloc/profile_bloc.dart';
+import 'package:machine_task/controllers/di_controller.dart';
 import 'package:machine_task/views/auth/login_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
@@ -15,9 +16,21 @@ void main() async {
   } catch (e) {
     print(e);
   }
+  await initDependencies();
   runApp(
     MultiBlocProvider(
-      providers: [BlocProvider(create: (context) => AuthBloc())],
+      providers: [
+        BlocProvider(
+          create: (context) => AuthBloc(
+            firebaseAuthService: getIt(),
+          ),
+        ),
+        BlocProvider(
+          create: (context) => ProfileBloc(
+            storageController: getIt(),
+          ),
+        ),
+      ],
       child: const MyApp(),
     ),
   );
@@ -26,7 +39,6 @@ void main() async {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(

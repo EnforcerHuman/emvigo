@@ -15,7 +15,10 @@ class AppButton extends StatelessWidget {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       ),
       onPressed: onPressed,
-      child: Text('Login', style: TextStyle(color: Colors.white, fontSize: 16)),
+      child: Text(
+        buttonText,
+        style: TextStyle(color: Colors.white, fontSize: 16),
+      ),
     );
   }
 }

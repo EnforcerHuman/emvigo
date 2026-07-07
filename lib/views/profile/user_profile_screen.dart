@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:machine_task/core/constants/colors.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:machine_task/blocs/bloc/profile_bloc/profile_bloc.dart';
+import 'package:machine_task/core/constants/text_styles.dart';
 import 'package:machine_task/core/widgets/app_button.dart';
 import 'package:machine_task/core/widgets/app_drop_down.dart';
+import 'package:machine_task/core/widgets/app_text.dart';
 import 'package:machine_task/core/widgets/app_text_field.dart';
+import 'package:machine_task/models/user_profile_model.dart';
 
 enum Gender { male, female }
 
@@ -13,251 +17,226 @@ class UserProfileScreen extends StatefulWidget {
   State<UserProfileScreen> createState() => _UserProfileScreenState();
 }
 
-Gender groupValue = Gender.male;
-
 class _UserProfileScreenState extends State<UserProfileScreen> {
+  late TextEditingController firstNameController;
+  late TextEditingController lastNameController;
+  late TextEditingController dobController;
+  Gender _gender = Gender.male;
+  String _country = 'INDIAN';
+  String _language = 'ENGLISH';
+
+  @override
+  void initState() {
+    super.initState();
+    firstNameController = TextEditingController();
+    lastNameController = TextEditingController();
+    dobController = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    firstNameController.dispose();
+    lastNameController.dispose();
+    dobController.dispose();
+    super.dispose();
+  }
+
+  void _saveProfile() {
+    if (firstNameController.text.isEmpty ||
+        lastNameController.text.isEmpty ||
+        dobController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please fill in all fields')),
+      );
+      return;
+    }
+    context.read<ProfileBloc>().add(
+      StoreProfileDataEvent(
+        userProfile: UserProfileModel(
+          firstName: firstNameController.text,
+          lastName: lastNameController.text,
+          dob: dobController.text,
+          gender: _gender.name,
+          country: _country,
+          language: _language,
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    TextEditingController firstNamecontroller = TextEditingController();
-    TextEditingController lastNamecontroller = TextEditingController();
-    TextEditingController dobController = TextEditingController();
-
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,
         leading: Container(child: Icon(Icons.arrow_back_ios)),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              RichText(
-                text: TextSpan(
-                  text: 'Create Your ',
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontFamily: "DM Serif Display",
-                    fontWeight: FontWeight.w400,
-                    fontStyle: FontStyle.normal,
-                    fontSize: 30,
-                    letterSpacing: 0,
-                    // height: 1.5,
+      body: BlocConsumer<ProfileBloc, ProfileState>(
+        listener: (context, state) {
+          if (state is ProfileSuccess) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(state.message)),
+            );
+          } else if (state is ProfileFailure) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(state.error)),
+            );
+          }
+        },
+        builder: (context, state) {
+          return Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  RichText(
+                    text: TextSpan(
+                      text: 'Create Your ',
+                      style: AppTextStyles.headingRegularBlack,
+                      children: <TextSpan>[
+                        TextSpan(
+                          text: 'Profile',
+                          style: AppTextStyles.headingBold,
+                        ),
+                      ],
+                    ),
                   ),
-                  children: <TextSpan>[
-                    TextSpan(
-                      text: 'Profile',
-                      style: TextStyle(
-                        fontFamily: "DM Serif Display", //use google fonte later
-                        fontWeight: FontWeight.w700,
-                        fontStyle: FontStyle.normal,
-                        color: AppColors.primaryColor,
-                        fontSize: 30,
-                        letterSpacing: 0,
-                        // height: 1.5,
+                  SizedBox(height: 30),
+                  AppText(
+                    "Create your profile with some basic information",
+                    style: AppTextStyles.subtitle,
+                  ),
+                  SizedBox(height: 27),
+                  AppText(
+                    "Whats your name ",
+                    style: AppTextStyles.bodyText,
+                    maxLines: 1,
+                  ),
+                  SizedBox(height: 20),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: AppTextField(
+                          controller: firstNameController,
+                          labelText: 'First Name',
+                        ),
                       ),
-                    ),
-                  ],
-                ),
-              ),
-              SizedBox(height: 30),
-              Text(
-                "Create your profile with some basic information",
-                style: TextStyle(
-                  fontFamily: "Outfit",
-                  fontWeight: FontWeight.w600,
-                  fontStyle: FontStyle.normal,
-                  fontSize: 13,
-                  letterSpacing: 0,
-                  color: AppColors.textColor,
-                  // height: 1.5,
-                ),
-              ),
-              SizedBox(height: 27),
-              Text(
-                "Whats your name ",
-                style: TextStyle(
-                  fontFamily: "Outfit",
-                  fontWeight: FontWeight.w400,
-                  fontStyle: FontStyle.normal,
-                  fontSize: 13,
-                  letterSpacing: 0,
-                  color: AppColors.textColor,
-
-                  // height: 1.5,
-                ),
-              ),
-              SizedBox(height: 20),
-
-              Row(
-                children: [
-                  Expanded(
-                    child: AppTextField(
-                      controller: firstNamecontroller,
-                      labelText: 'First Name',
-                    ),
+                      SizedBox(width: 10),
+                      Expanded(
+                        child: AppTextField(
+                          controller: lastNameController,
+                          labelText: 'Last Name',
+                        ),
+                      ),
+                    ],
                   ),
-                  SizedBox(width: 10),
-                  Expanded(
-                    child: AppTextField(
-                      controller: lastNamecontroller,
-                      labelText: 'Last Name',
-                    ),
+                  SizedBox(height: 10),
+                  AppText(
+                    "First name is only visible on your profile.",
+                    style: AppTextStyles.bodyGray,
                   ),
-                ],
-              ),
-              SizedBox(height: 10),
-              Text(
-                "First name is only visible on your profile.",
-                style: TextStyle(
-                  fontFamily: "Outfit",
-                  fontWeight: FontWeight.w400,
-                  fontStyle: FontStyle.normal,
-                  fontSize: 13,
-                  letterSpacing: 0,
-                  color: AppColors.textGray,
-
-                  // height: 1.5,
-                ),
-              ),
-
-              ///
-              ///
-              ///DOB Section
-              ///
-              SizedBox(height: 27),
-              Text(
-                "What’s your date of birth",
-                style: TextStyle(
-                  fontFamily: "Outfit",
-                  fontWeight: FontWeight.w400,
-                  fontStyle: FontStyle.normal,
-                  fontSize: 13,
-                  letterSpacing: 0,
-                  color: AppColors.textColor,
-
-                  // height: 1.5,
-                ),
-              ),
-              SizedBox(height: 10),
-              AppTextField(controller: dobController, labelText: 'dd-mm-yyyy'),
-
-              ///
-              ///
-              ///Gender Section
-              ///
-              SizedBox(height: 27),
-              Text(
-                "What’s your gender",
-                style: TextStyle(
-                  fontFamily: "Outfit",
-                  fontWeight: FontWeight.w400,
-                  fontStyle: FontStyle.normal,
-                  fontSize: 13,
-                  letterSpacing: 0,
-                  color: AppColors.textColor,
-
-                  // height: 1.5,
-                ),
-              ),
-              Row(
-                children: [
-                  Expanded(
-                    child: RadioListTile<Gender>(
-                      groupValue: groupValue,
-                      selected: groupValue == Gender.male,
-                      value: Gender.male,
-                      title: const Text('Male'),
-                      onChanged: (value) {
+                  SizedBox(height: 27),
+                  AppText(
+                    "What's your date of birth",
+                    style: AppTextStyles.bodyText,
+                    maxLines: 1,
+                  ),
+                  SizedBox(height: 10),
+                  AppTextField(controller: dobController, labelText: 'dd-mm-yyyy'),
+                  SizedBox(height: 27),
+                  AppText(
+                    "What's your gender",
+                    style: AppTextStyles.bodyText,
+                    maxLines: 1,
+                  ),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: RadioListTile<Gender>(
+                          groupValue: _gender,
+                          selected: _gender == Gender.male,
+                          value: Gender.male,
+                          title: const Text('Male'),
+                          onChanged: (value) {
+                            setState(() {
+                              _gender = Gender.male;
+                            });
+                          },
+                        ),
+                      ),
+                      Expanded(
+                        child: RadioListTile<Gender>(
+                          groupValue: _gender,
+                          selected: _gender == Gender.female,
+                          value: Gender.female,
+                          title: const Text('Female'),
+                          onChanged: (value) {
+                            setState(() {
+                              _gender = Gender.female;
+                            });
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 27),
+                  AppText(
+                    "What's your nationality",
+                    style: AppTextStyles.bodyText,
+                    maxLines: 1,
+                  ),
+                  SizedBox(height: 10),
+                  AppDropDown(
+                    value: _country,
+                    options: [
+                      'INDIAN',
+                      'EGYPTIAN',
+                      'CANADIAN',
+                      'AMERICAN',
+                      'AUSTRALIAN',
+                      'CHINESE',
+                      'JAPANESE',
+                    ],
+                    onChanged: (value) {
+                      if (value != null) {
                         setState(() {
-                          groupValue = Gender.male;
+                          _country = value;
                         });
-                      },
-                    ),
+                      }
+                    },
                   ),
-                  Expanded(
-                    child: RadioListTile<Gender>(
-                      groupValue: groupValue,
-                      selected: groupValue == Gender.female,
-                      value: Gender.female,
-                      title: const Text('Female'),
-                      onChanged: (value) {
+                  SizedBox(height: 27),
+                  AppText(
+                    "Languages spoken",
+                    style: AppTextStyles.bodyText,
+                    maxLines: 1,
+                  ),
+                  SizedBox(height: 10),
+                  AppDropDown(
+                    value: _language,
+                    options: ["ENGLISH", "HINDI"],
+                    onChanged: (value) {
+                      if (value != null) {
                         setState(() {
-                          groupValue = Gender.female;
+                          _language = value;
                         });
-                      },
-                    ),
+                      }
+                    },
                   ),
+                  SizedBox(height: 27),
+                  state is ProfileLoading
+                      ? Center(child: CircularProgressIndicator())
+                      : AppButton(
+                          onPressed: _saveProfile,
+                          buttonText: 'Continue',
+                        ),
                 ],
               ),
-
-              ///
-              ///
-              ///Nationaliuty Section
-              ///
-              SizedBox(height: 27),
-              Text(
-                "What’s your nationality",
-                style: TextStyle(
-                  fontFamily: "Outfit",
-                  fontWeight: FontWeight.w400,
-                  fontStyle: FontStyle.normal,
-                  fontSize: 13,
-                  letterSpacing: 0,
-                  color: AppColors.textColor,
-
-                  // height: 1.5,
-                ),
-              ),
-              SizedBox(height: 10),
-              AppDropDown(
-                options: [
-                  'INDIAN',
-                  'EGYPTIAN',
-                  'CANADIAN',
-                  'AMERICAN',
-                  'AUSTRALIAN',
-                  'CHINESE',
-                  'JAPANESE',
-                ],
-              ),
-
-              ///
-              ///
-              ///Language Section
-              SizedBox(height: 27),
-              Text(
-                "Languages spoken",
-                style: TextStyle(
-                  fontFamily: "Outfit",
-                  fontWeight: FontWeight.w400,
-                  fontStyle: FontStyle.normal,
-                  fontSize: 13,
-                  letterSpacing: 0,
-                  color: AppColors.textColor,
-
-                  // height: 1.5,
-                ),
-              ),
-              SizedBox(height: 10),
-              AppDropDown(options: ["ENGLISH", "HINDI"]),
-
-              ///
-              ///Action Section
-              ///
-              SizedBox(height: 27),
-
-              AppButton(
-                onPressed: () {
-                  // Handle button press
-                },
-                buttonText: 'Continue',
-              ),
-            ],
-          ),
-        ),
+            ),
+          );
+        },
       ),
     );
   }

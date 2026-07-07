@@ -6,8 +6,10 @@ part 'auth_event.dart';
 part 'auth_state.dart';
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
-  final AuthController _firebaseAuthService = AuthController();
-  AuthBloc() : super(AuthInitial()) {
+  final AuthController _firebaseAuthService;
+  AuthBloc({required AuthController firebaseAuthService})
+    : _firebaseAuthService = firebaseAuthService,
+      super(AuthInitial()) {
     on<AuthEvent>((event, emit) {
       emit(AuthInitial());
     });

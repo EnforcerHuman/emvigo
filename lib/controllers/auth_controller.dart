@@ -1,9 +1,10 @@
 import 'package:machine_task/services/firebase_servicde.dart';
 
 class AuthController {
-  // Add your authentication logic here
+  final FirebaseAuthService _authService;
 
-  final FirebaseAuthService _authService = FirebaseAuthService();
+  AuthController({required FirebaseAuthService firebaseAuthService})
+    : _authService = firebaseAuthService;
 
   Future<bool> signIn(String email, String password) async {
     try {

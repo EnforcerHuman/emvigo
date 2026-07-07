@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:machine_task/blocs/bloc/auth_bloc.dart';
+import 'package:machine_task/core/constants/text_styles.dart';
 import 'package:machine_task/core/widgets/app_button.dart';
+import 'package:machine_task/core/widgets/app_text.dart';
 import 'package:machine_task/core/widgets/app_text_field.dart';
 import 'package:machine_task/views/auth/signin_screen.dart';
 import 'package:machine_task/views/profile/user_profile_screen.dart';
@@ -42,28 +44,15 @@ class LoginScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
+                  AppText(
                     "Create Account",
-                    style: TextStyle(
-                      fontFamily: " DM Serif Display",
-                      fontWeight: FontWeight.w400,
-                      fontStyle: FontStyle.normal,
-                      fontSize: 30,
-                      // height: 37,
-                      letterSpacing: 0,
-                    ),
+                    style: AppTextStyles.headingRegular,
+                    maxLines: 1,
                   ),
                   SizedBox(height: 30),
-                  Text(
+                  AppText(
                     "All users are verified to help prevent fake accounts.",
-                    style: TextStyle(
-                      fontFamily: "Outfit",
-                      fontWeight: FontWeight.w400,
-                      fontStyle: FontStyle.normal,
-                      fontSize: 13,
-                      letterSpacing: 0,
-                      // height: 1.5,
-                    ),
+                    style: AppTextStyles.bodyRegular,
                   ),
                   SizedBox(height: 54),
                   AppTextField(controller: emailController, labelText: 'Email'),
@@ -119,28 +108,11 @@ class LoginScreen extends StatelessWidget {
                       child: RichText(
                         text: TextSpan(
                           text: 'Already have an account?',
-                          style: TextStyle(
-                            fontFamily: "Outfit",
-                            fontWeight: FontWeight.w400,
-                            fontStyle: FontStyle.normal,
-                            color: Colors.black,
-                            fontSize: 13,
-                            letterSpacing: 0,
-                            // height: 1.5,
-                          ),
+                          style: AppTextStyles.bodyBlack,
                           children: <TextSpan>[
                             TextSpan(
                               text: ' Sign In',
-                              style: TextStyle(
-                                fontFamily:
-                                    "DM Serif Display", //use google fonte later
-                                fontWeight: FontWeight.w700,
-                                fontStyle: FontStyle.normal,
-                                color: Color(0xFF767676),
-                                fontSize: 13,
-                                letterSpacing: 0,
-                                // height: 1.5,
-                              ),
+                              style: AppTextStyles.headingLink,
                             ),
                           ],
                         ),
