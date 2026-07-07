@@ -70,18 +70,25 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,
-        leading: Container(child: Icon(Icons.arrow_back_ios)),
+        leading: Container(
+          child: IconButton(
+            icon: Icon(Icons.arrow_back_ios),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
+        ),
       ),
       body: BlocConsumer<ProfileBloc, ProfileState>(
         listener: (context, state) {
           if (state is ProfileSuccess) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(state.message)),
-            );
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(SnackBar(content: Text(state.message)));
           } else if (state is ProfileFailure) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(state.error)),
-            );
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(SnackBar(content: Text(state.error)));
           }
         },
         builder: (context, state) {
@@ -144,7 +151,10 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                     maxLines: 1,
                   ),
                   SizedBox(height: 10),
-                  AppTextField(controller: dobController, labelText: 'dd-mm-yyyy'),
+                  AppTextField(
+                    controller: dobController,
+                    labelText: 'dd-mm-yyyy',
+                  ),
                   SizedBox(height: 27),
                   AppText(
                     "What's your gender",
