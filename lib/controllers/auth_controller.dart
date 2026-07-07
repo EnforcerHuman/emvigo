@@ -11,7 +11,6 @@ class AuthController {
       await _authService.signInWithEmailAndPassword(email, password);
       return true;
     } catch (e) {
-      // Handle sign-in error
       return false;
     }
   }
@@ -20,9 +19,7 @@ class AuthController {
     try {
       await _authService.createUserWithEmailAndPassword(email, password);
       return true;
-      // Handle successful sign-up
     } catch (e) {
-      // Handle sign-up error
       return false;
       print('Sign-up error: $e');
     }
@@ -31,9 +28,7 @@ class AuthController {
   Future<void> signOut() async {
     try {
       await _authService.signOut();
-      // Handle successful sign-out
     } catch (e) {
-      // Handle sign-out error
       print('Sign-out error: $e');
     }
   }

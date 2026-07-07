@@ -1,8 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 
 class FirebaseAuthService {
-  // Add your Firebase service methods here
-
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
   Future<UserCredential> signInWithEmailAndPassword(
@@ -15,7 +13,6 @@ class FirebaseAuthService {
         password: password,
       );
     } catch (e) {
-      // Handle sign-in error
       print('Sign-in error: $e');
       rethrow;
     }
@@ -31,7 +28,6 @@ class FirebaseAuthService {
         password: password,
       );
     } catch (e) {
-      // Handle sign-up error
       print('Sign-up error: $e');
       rethrow;
     }

@@ -31,7 +31,6 @@ class _SignInScreenState extends State<SignInScreen> {
           } else if (state is AuthSuccess) {
             Navigator.of(context).pop();
 
-            // Navigate to the next screen or show success message
             ScaffoldMessenger.of(
               context,
             ).showSnackBar(SnackBar(content: Text('Logged in successfully!')));
